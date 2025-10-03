@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 class User(AbstractUser):
     username = models.CharField(max_length=150, unique=True)
@@ -37,7 +38,7 @@ class Book(models.Model):
     genre = models.CharField("Genre", max_length=50)
     agerating = models.CharField("Age Rating", choices=AGE_RATINGS, max_length=10)
     description = models.TextField("Description", max_length=1000)
-    coverimage = models.ImageField("Cover Image", upload_to='images/')
+    coverimage = CloudinaryField('images')
 
     def __str__(self):
         return self.bname
