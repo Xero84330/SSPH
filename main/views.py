@@ -3,10 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .forms import UserCreationForm
 from .models import User, Book, Chapter
-from django.contrib.auth.decorators import login_required
 from django.db.models import Max
-from django.contrib.auth import get_user_model
-from django.http import HttpResponse
 
 
 # Create your views here.
