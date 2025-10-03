@@ -1,0 +1,244 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+    <style>
+      /* This is a temporary style for the main content area to make clicks outside the nav detectable.
+                                                               You should ensure your main content block properly fills the screen below the nav. */
+      .main-content-overlay {
+        min-height: calc(100vh - 14rem); /* Adjust based on your footer height and nav height */
+        width: 100%;
+        position: relative;
+        z-index: 30; /* Ensure it's below the nav but above other background elements for click detection */
+      }
+    </style>
+  </head>
+
+  <body class="h-auto bg-orange-50 font-sans m-0 p-0">
+    <!-- Navbar -->
+    <nav class="sticky top-0 w-full bg-orange-100 h-14 text-amber-950 flex items-center justify-between px-4 md:px-10 shadow-md z-40">
+      <a href="{% url 'home' %}"><img src="{% static 'images/Brown_Full_logo.png' %}" alt="Sp.img" class="h-30 md:h-50 object-contain" /></a>
+
+      <!-- Desktop Menu -->
+      <ul class="hidden md:flex md:flex-row flex-col items-center space-x-5">
+        <li>
+          <a href="{% url 'home' %}" class="hover:text-orange-500">Home</a>
+        </li>
+        <li>
+          <a href="{% url 'browse' %}" class="hover:text-orange-500">Browse</a>
+        </li>
+        <li>
+          <a href="{% url 'ranking' %}" class="hover:text-orange-500">Rankings</a>
+        </li>
+        <li>
+          <a href="{% url 'contest' %}" class="hover:text-orange-500">Contest</a>
+        </li>
+        <li>
+          <a href="{% url 'about' %}" class="hover:text-orange-500">About</a>
+        </li>
+        <li>
+          <a href="{% url 'create' %}" class="hover:text-orange-500">Create</a>
+        </li>
+        <li>
+          <input type="text" placeholder="🔍 Search books" class="w-full bg-white text-amber-950 placeholder-amber-400 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400" />
+        </li>
+
+        <li>
+          <button class="text-2xl hover:scale-110 transition-transform">💗</button>
+        </li>
+        <li>
+          {% if user.is_authenticated %}
+            <form id="logout-form" action="{% url 'logout' %}" method="POST">
+              {% csrf_token %}
+              <button id="dlogout" type="submit" class="p-2 h-9 text-white bg-amber-900 rounded-3xl text-sm font-bold hover:bg-amber-800 transition-colors">LOGOUT</button>
+            </form>
+          {% else %}
+            <button id="dsignin" class="p-2 h-9 text-white bg-amber-900 rounded-3xl text-sm font-bold hover:bg-amber-800 transition-colors">SIGN IN</button>
+          {% endif %}
+        </li>
+      </ul>
+
+      <!-- Mobile Menu Button -->
+      <div id="menu" class="text-3xl md:hidden cursor-pointer">☰</div>
+    </nav>
+
+    <!-- Mobile Sidebar -->
+    <div id="mobile-menu" class="fixed top-14 left-0 h-screen w-52 bg-orange-100 text-amber-950 shadow-lg transform -translate-x-full transition-transform duration-300 md:hidden z-50">
+      <ul class="flex flex-col space-y-2 mt-4 px-4">
+        <li>
+          <input type="text" placeholder="🔍 Search books" class="w-full bg-white text-amber-950 placeholder-amber-400 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400" />
+        </li>
+        <li>
+          <a href="{% url 'home' %}" class="block hover:bg-orange-200 px-3 py-2 rounded">Home</a>
+        </li>
+        <li>
+          <a href="{% url 'browse' %}" class="block hover:bg-orange-200 px-3 py-2 rounded">Browse</a>
+        </li>
+        <li>
+          <a href="{% url 'ranking' %}" class="block hover:bg-orange-200 px-3 py-2 rounded">Rankings</a>
+        </li>
+        <li>
+          <a href="{% url 'contest' %}" class="block hover:bg-orange-200 px-3 py-2 rounded">Contest</a>
+        </li>
+        <li>
+          <a href="{% url 'about' %}" class="block hover:bg-orange-200 px-3 py-2 rounded">About</a>
+        </li>
+        <li>
+          <a href="{% url 'create' %}" class="block hover:bg-orange-200 px-3 py-2 rounded">Create</a>
+        </li>
+        <li>
+          <a href="#" class="block hover:bg-orange-200 px-3 py-2 rounded">Favorite</a>
+        </li>
+        <br /><br />
+        <li>
+          {% if user.is_authenticated %}
+            <form action="{% url 'logout' %}" method="POST">
+              {% csrf_token %}
+              <button id="mlogout" class="block text-center p-1 h-8 w-24 text-white bg-amber-900 rounded-3xl hover:bg-amber-800 text-sm font-bold mx-auto">LOGOUT</button>
+            </form>
+          {% else %}
+            <button id="msignin" class="block text-center p-1 h-8 w-24 text-white bg-amber-900 rounded-3xl hover:bg-amber-800 text-sm font-bold mx-auto">SIGN IN</button>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+
+    {% if messages %}
+      <div id="toast-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50">
+        {% for message in messages %}
+          <div class="px-4 py-3 rounded-lg shadow-lg text-sm font-medium
+          {% if message.tags == 'error' %}
+              
+              
+              
+            bg-red-600 text-white
+
+
+
+            {% elif message.tags == 'success' %}
+              
+              
+              
+            bg-green-600 text-white
+
+
+
+            {% else %}
+              
+              
+              
+            bg-gray-800 text-white
+
+
+
+            {% endif %}
+          transition transform opacity-100 duration-500">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Main content -->
+    <div class="main-content-overlay" id="main-content">
+      {% block body %}
+
+      {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-amber-950 text-white px-4 py-6 md:px-6 md:py-12 mt-10">
+      <div class="flex flex-col md:flex-row justify-between items-start gap-4 md:gap-6">
+        <!-- Logo -->
+        <div class="flex items-center gap-2 md:gap-3">
+          <img src="{% static 'images/Kariya-removebg-preview.png' %}" alt="Logo" class="w-12 md:w-16 h-auto object-contain" />
+          <h1 class="text-lg md:text-2xl font-extrabold">Signed & Stamped</h1>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="flex flex-col gap-1 md:gap-2">
+          <a href="#" class="text-sm md:text-base hover:text-orange-300">Email</a>
+          <a href="#" class="text-sm md:text-base hover:text-orange-300">Phone</a>
+        </div>
+
+        <!-- Desktop-only -->
+        <div class="hidden md:flex flex-col gap-2">
+          <h1 class="text-lg">Our Team</h1>
+          <a href="#" class="text-sm font-normal hover:text-orange-300">Member 1</a>
+          <a href="#" class="text-sm font-normal hover:text-orange-300">Member 2</a>
+        </div>
+
+        <div class="hidden md:flex flex-col gap-2">
+          <h1 class="text-lg">Legal Registrations</h1>
+          <a href="#" class="text-sm font-normal hover:text-orange-300">GSTIN</a>
+          <a href="#" class="text-sm font-normal hover:text-orange-300">License</a>
+        </div>
+
+        <div class="hidden md:flex gap-3 mt-2 text-lg md:text-xl">
+          <a href="#" class="hover:text-orange-300">📘</a>
+          <a href="#" class="hover:text-orange-300">🐦</a>
+          <a href="#" class="hover:text-orange-300">📸</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-6 right-6 bg-orange-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-orange-600 transition-colors hidden z-50">↑ Top</button>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const menuButton = document.getElementById('menu')
+        const mobileMenu = document.getElementById('mobile-menu')
+        const backToTop = document.getElementById('backToTop')
+        const dsignInButton = document.getElementById('dsignin')
+        const msignInButton = document.getElementById('msignin')
+      
+        // --- Sign In Button Redirect ---
+        dsignInButton?.addEventListener('click', () => (window.location.href = "{% url 'login' %}"))
+        msignInButton?.addEventListener('click', () => (window.location.href = "{% url 'login' %}"))
+      
+        // --- Mobile Navbar Toggle ---
+        menuButton?.addEventListener('click', (event) => {
+          event.stopPropagation()
+          mobileMenu?.classList.toggle('-translate-x-full')
+        })
+      
+        // Close mobile menu when clicking outside
+        document.body.addEventListener('click', (event) => {
+          if (mobileMenu && menuButton && !mobileMenu.contains(event.target) && !menuButton.contains(event.target) && !mobileMenu.classList.contains('-translate-x-full')) {
+            mobileMenu.classList.add('-translate-x-full')
+          }
+        })
+      
+        // Prevent clicks inside mobile menu from closing it
+        mobileMenu?.addEventListener('click', (event) => event.stopPropagation())
+      
+        // Swipe gesture for mobile menu
+        let touchStartX = 0
+        mobileMenu?.addEventListener('touchstart', (event) => (touchStartX = event.touches[0].clientX))
+        mobileMenu?.addEventListener('touchmove', (event) => {
+          if (!mobileMenu.classList.contains('-translate-x-full')) {
+            const touchMoveX = event.touches[0].clientX
+            if (touchStartX - touchMoveX > 50) mobileMenu.classList.add('-translate-x-full')
+          }
+        })
+      
+        // --- Back to top button ---
+        window.addEventListener('scroll', () => {
+          backToTop?.classList[window.scrollY > 200 ? 'remove' : 'add']('hidden')
+        })
+        backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }))
+      
+        // --- Toast auto hide ---
+        setTimeout(() => {
+          const toast = document.getElementById('toast-container')
+          if (toast) {
+            toast.classList.add('opacity-0', 'translate-x-5')
+            setTimeout(() => toast.remove(), 500)
+          }
+        }, 3000)
+      })
+    </script>
+  </body>
+</html>

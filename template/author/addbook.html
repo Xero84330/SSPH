@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+    <title>Document</title>
+  </head>
+
+  <body class="bg-orange-50 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-orange-200 p-6 relative">
+      <!-- Close Button -->
+      <a href="{% url 'create' %}" class="absolute top-4 right-4 text-amber-500 hover:text-amber-700 text-2xl font-bold focus:outline-none">X</a>
+
+      <!-- Header -->
+      <h2 class="text-2xl font-bold text-center text-amber-800 mb-6">Add New Book</h2>
+
+      <form id="bookForm" action="{% url 'addbook' %}" enctype="multipart/form-data" method="POST" class="space-y-5 text-amber-950">
+        {% csrf_token %}
+        <!-- Book Name -->
+        <div>
+          <label class="block mb-1 font-medium" for="bookName">Book Name</label>
+          <input type="text" id="bookName" name="bname" required class="w-full p-2.5 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+
+        <!-- Book Type -->
+        <div>
+          <label class="block mb-1 font-medium" for="type">Type</label>
+          <select id="type" name="btype" required class="w-full p-2.5 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <option value="">Select type</option>
+            <option value="novel">Novel</option>
+            <option value="comic">Comic</option>
+            <option value="shortstory">Short Story</option>
+          </select>
+        </div>
+
+        <!-- Genre -->
+        <div>
+          <label class="block mb-1 font-medium" for="genre">Genre</label>
+          <input type="text" id="genre" name="genre" placeholder="e.g., Fantasy, Sci-Fi" required class="w-full p-2.5 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+
+        <!-- Age Rating -->
+        <div>
+          <label class="block mb-1 font-medium" for="ageRating">Age Rating</label>
+          <select id="ageRating" name="agerating" required class="w-full p-2.5 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <option value="">Select age rating</option>
+            <option value="All Ages">All Ages</option>
+            <option value="13+">13+</option>
+            <option value="16+">16+</option>
+            <option value="18+">18+</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block mb-1 font-medium" for="description">Description</label>
+          <textarea id="description" name="description" rows="3" required class="w-full p-2.5 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"></textarea>
+        </div>
+
+        <!-- Cover Image Upload Box (9:16 ratio) -->
+        <div>
+          <label class="block mb-2 font-medium">Cover Image (Max 500KB)</label>
+
+          <div id="dropArea" class="relative w-40 aspect-[9/16] flex items-center justify-center border-2 border-dashed border-orange-300 rounded-lg cursor-pointer bg-orange-50 hover:bg-orange-100 overflow-hidden">
+            <span id="uploadText" class="text-center text-amber-700">Click or Drop Image Here</span>
+            <input type="file" name="coverimage" id="imageInput" accept="image/*" class="absolute w-full h-full opacity-0 cursor-pointer" />
+            <img id="previewImg" class="absolute w-full h-full object-cover hidden" />
+          </div>
+
+          <!-- Progress Bar -->
+          <div id="progressContainer" class="w-40 mt-2 hidden">
+            <div class="h-2 bg-orange-200 rounded-full">
+              <div id="progressBar" class="h-2 bg-amber-600 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <p id="errorMsg" class="text-red-500 text-sm mt-1 hidden">File too large. Max 500KB allowed.</p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center pt-2">
+          <button type="submit" class="bg-amber-600 text-white font-semibold py-2 px-6 rounded-full hover:bg-amber-700 transition shadow">Submit</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Script for image upload -->
+    <script>
+      const imageInput = document.getElementById('imageInput')
+      const dropArea = document.getElementById('dropArea')
+      const previewImg = document.getElementById('previewImg')
+      const uploadText = document.getElementById('uploadText')
+      const errorMsg = document.getElementById('errorMsg')
+      const progressContainer = document.getElementById('progressContainer')
+      const progressBar = document.getElementById('progressBar')
+      
+      imageInput.addEventListener('change', handleFile)
+      
+      function handleFile() {
+        const file = imageInput.files[0]
+        if (!file) return
+      
+        if (file.size > 500 * 1024) {
+          // 500KB
+          errorMsg.classList.remove('hidden')
+          progressContainer.classList.add('hidden')
+          previewImg.classList.add('hidden')
+          uploadText.classList.remove('hidden')
+          return
+        }
+      
+        errorMsg.classList.add('hidden')
+        progressContainer.classList.remove('hidden')
+      
+        // Simulate upload progress
+        let progress = 0
+        const interval = setInterval(() => {
+          progress += 10
+          progressBar.style.width = progress + '%'
+      
+          if (progress >= 100) {
+            clearInterval(interval)
+            // Show image preview
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              previewImg.src = e.target.result
+              previewImg.classList.remove('hidden')
+              uploadText.classList.add('hidden')
+            }
+            reader.readAsDataURL(file)
+          }
+        }, 50)
+      }
+      
+      dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault()
+        dropArea.classList.add('bg-orange-100')
+      })
+      
+      dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('bg-orange-100')
+      })
+      
+      dropArea.addEventListener('drop', (e) => {
+        e.preventDefault()
+        dropArea.classList.remove('bg-orange-100')
+        imageInput.files = e.dataTransfer.files
+        handleFile()
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+{% extends 'reader/rbase.html' %}
+
+{% block body %}
+  <section class="max-w-6xl mx-auto mt-8 px-4 md:px-8 py-10 bg-white shadow-lg rounded-2xl">
+    <div class="flex flex-col lg:flex-row gap-10">
+      <!-- Book Image -->
+      <div class="flex justify-center lg:justify-start lg:w-1/3">
+        <img src="{{ book.coverimage.url }}" alt="Book Cover" class="w-48 sm:w-60 md:w-72 aspect-[2/3] object-cover rounded-xl shadow-md hover:scale-105 transition-transform duration-300" />
+      </div>
+
+      <!-- Book Info -->
+      <div class="flex flex-col justify-between lg:w-2/3">
+        <div>
+          <!-- Title -->
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3 text-amber-950">{{ book.bname }}</h2>
+
+          <!-- Genre Tag -->
+          <p class="mb-4">
+            <span class="italic text-sm md:text-base px-3 py-1 bg-orange-100 rounded-full text-amber-800">{{ book.genre }}</span>
+          </p>
+
+          <!-- Stats -->
+          <div class="flex flex-wrap gap-5 text-sm md:text-base mb-5 text-gray-600">
+            <span class="flex items-center gap-1">👁️ <span>23.4K views</span></span>
+            <span class="flex items-center gap-1">❤️ <span>1.2K likes</span></span>
+            <span class="flex items-center gap-1">💬 <span>300 reviews</span></span>
+          </div>
+
+          <!-- Description -->
+          <div class="text-sm md:text-base leading-relaxed text-gray-800 max-h-40 md:max-h-56 overflow-y-auto pr-2 custom-scrollbar">{{ book.description }}</div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="{% url 'rread' book.id book.chapters.first.id %}"><button class="bg-amber-900 hover:bg-amber-800 text-white font-semibold text-sm md:text-base py-3 px-6 rounded-lg shadow-md transition-transform duration-300 hover:scale-105">📖 Read Now</button></a>
+          <a href=""><button class="bg-gray-200 hover:bg-gray-300 text-amber-900 font-semibold text-sm md:text-base py-3 px-6 rounded-lg shadow-md transition-transform duration-300">❤️Favorites</button></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 bg-gray-50 border border-gray-200 rounded-lg shadow-sm p-4 max-h-40 overflow-y-auto custom-scrollbar">
+      <h3 class="text-lg font-bold text-amber-900 mb-3">Chapters</h3>
+      <ul class="space-y-2 text-sm md:text-base">
+        {% for chapter in chapters %}
+          <li>
+            <a href="{% url 'rread' book.id chapter.id %}" class="block px-3 py-2 rounded-lg hover:bg-amber-100 hover:text-amber-900 transition">{{ chapter.order }}. {{ chapter.title }}</a>
+          </li>
+        {% empty %}
+          <p class="text-gray-500 italic">No chapters yet.</p>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'author/abase.html' %}
+{% block body %}
+  <section class="my-10 px-4 md:px-6">
+    <!-- Latest News -->
+    <!-- Desktop + Tablet Section (>= 400px) -->
+    <section class="hidden sm:flex flex-row justify-center items-center p-6 gap-6">
+      <div class="bg-orange-50 w-full md:h-60 h-40 flex flex-col gap-4">
+        <h1 class="text-amber-950 font-bold md:text-4xl md:font-extrabold">Latest News</h1>
+        <div class="space-y-2 text-sm overflow-y-auto scroll-m-0">
+          <p>Here are some lines for news</p>
+          <p>Here are some lines for news</p>
+          <p>Here are some lines for news</p>
+          <p>Here are some lines for news</p>
+          <p>Here are some lines for news</p>
+        </div>
+        <button class="text-white bg-orange-500 w-20 h-8 md:w-40 md:h-10 font-bold text-sm">Explore</button>
+      </div>
+      <div class="bg-gray-200 w-full lg:w-2/3 md:h-60 h-40 flex items-center justify-center">image</div>
+    </section>
+
+    <!-- Mobile Section (< 400px) -->
+    <section class="flex flex-col sm:hidden justify-center items-center p-6 gap-4">
+      <!-- Heading + Explore Button Row -->
+      <div class="w-full flex justify-between items-center">
+        <h1 class="text-amber-950 font-bold text-lg">Latest News</h1>
+        <button class="text-white bg-orange-500 w-20 h-8 font-bold text-sm hover:bg-orange-600 transition-colors">Explore</button>
+      </div>
+      <!-- Image below -->
+      <div class="bg-gray-200 w-full h-40 flex items-center justify-center">image</div>
+    </section>
+
+    <!-- Books Grid -->
+    <!-- Books Grid -->
+    <section class="my-10">
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-amber-950 font-bold text-2xl">Your Books</h1>
+        <a href="{% url 'addbook' %}" class="px-4 py-2 text-white bg-amber-900 rounded-full font-bold hover:bg-amber-800 transition text-sm">Add</a>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="book-grid">
+        {% for book in books %}
+          <div class="inline-block w-32 md:w-40 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 relative bg-gray-50 cursor-pointer ml-4">
+            <!-- Cover Image -->
+            <div class="w-full aspect-[2/3] relative">
+              {% if book.coverimage %}
+                <img src="{{ book.coverimage.url }}" class="absolute inset-0 w-full h-full object-cover" />
+              {% else %}
+                <div class="absolute inset-0 flex items-center justify-center bg-gray-300 text-gray-500 text-xs">No Image</div>
+              {% endif %}
+
+              <!-- Gradient only at bottom -->
+              <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/70 to-transparent"></div>
+
+              <!-- Book Title -->
+              <div class="absolute bottom-1 left-0 right-0 px-2 text-white text-sm font-semibold text-center drop-shadow-md">
+                <span class="line-clamp-1">{{ book.bname }}</span>
+              </div>
+            </div>
+
+            <!-- Buttons below the card -->
+            <div class="flex justify-center gap-2 mt-2 bg-orange-50">
+              <a href="#" class="bg-amber-700 text-white text-xs px-3 py-1 rounded hover:bg-amber-600 transition">Info</a>
+              <a href="{% url "abookpage" book.id %}" class="bg-gray-600 text-white text-xs px-3 py-1 rounded hover:bg-gray-500 transition">Update</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  </section>
+{% endblock %}

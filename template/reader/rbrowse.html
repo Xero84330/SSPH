@@ -1,0 +1,57 @@
+{% extends 'reader/rbase.html' %}
+
+{% block body %}
+  <!-- Browse Page -->
+  <section class="p-6 bg-orange-50 min-h-screen">
+    <!-- Header controls -->
+    <div class="flex justify-between items-center mb-6">
+      <!-- Left: Sort by -->
+      <div>
+        <select class="px-2 py-1 border border-amber-300 rounded-md text-amber-950 bg-white shadow-sm focus:ring-2 focus:ring-orange-400 text-sm">
+          <option value="a-z">Order: A to Z</option>
+          <option value="z-a">Order: Z to A</option>
+        </select>
+      </div>
+
+      <!-- Right: Toggle order button -->
+      <button class="flex items-center gap-1 px-3 py-1 bg-amber-900 text-white rounded-md shadow hover:bg-orange-500 transition-colors text-sm">
+        <span>Sort</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform transition-transform duration-300" id="sortIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Books Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <!-- Book Card Example -->
+      <div class="bg-white shadow rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+        <img src="https://via.placeholder.com/150x220" alt="Book Cover" class="w-full h-40 object-cover" />
+        <div class="p-2 flex flex-col">
+          <h2 class="text-sm font-bold text-amber-950 truncate">Book Title</h2>
+          <p class="text-xs text-gray-600 line-clamp-2 mt-1">A short description of the book, previewing the story.</p>
+          <button class="mt-2 px-2 py-1 bg-orange-500 text-white rounded text-xs hover:bg-orange-600 transition-colors self-start">Read</button>
+        </div>
+      </div>
+
+      <!-- Duplicate for more books -->
+      <div class="bg-white shadow rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+        <img src="https://via.placeholder.com/150x220" alt="Book Cover" class="w-full h-40 object-cover" />
+        <div class="p-2 flex flex-col">
+          <h2 class="text-sm font-bold text-amber-950 truncate">Another Book</h2>
+          <p class="text-xs text-gray-600 line-clamp-2 mt-1">Another sample description of the book.</p>
+          <button class="mt-2 px-2 py-1 bg-orange-500 text-white rounded text-xs hover:bg-orange-600 transition-colors self-start">Read</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <!--  <div class="flex justify-center items-center mt-8 space-x-1 text-sm">
+            <button class="px-2 py-1 bg-amber-200 text-amber-950 rounded hover:bg-amber-300">Prev</button>
+            <button class="px-2 py-1 bg-amber-900 text-white rounded">1</button>
+            <button class="px-2 py-1 bg-amber-200 text-amber-950 rounded hover:bg-amber-300">2</button>
+            <button class="px-2 py-1 bg-amber-200 text-amber-950 rounded hover:bg-amber-300">3</button>
+            <button class="px-2 py-1 bg-amber-200 text-amber-950 rounded hover:bg-amber-300">Next</button>
+        </div>  -->
+  </section>
+{% endblock %}

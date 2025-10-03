@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+    <title>Reading | Signed & Stamped Publishing House</title>
+  </head>
+  <body class="bg-orange-50 text-amber-950 font-sans">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b shadow-sm">
+      <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+        <!-- Back to Book -->
+        <a href="{% url 'rbook' book.id %}" class="flex items-center gap-1 text-amber-900 font-medium hover:text-amber-700 transition">← Back to Book</a>
+      </div>
+    </nav>
+
+    <!-- Sidebar (Chapters List) -->
+    <aside id="chapterSidebar" class="fixed top-0 right-0 h-full w-64 bg-white shadow-xl z-30 hidden">
+      <div class="flex justify-between items-center px-4 py-3 border-b">
+        <h2 class="text-lg font-bold">Chapters</h2>
+        <button id="closeSidebar" class="text-gray-600 hover:text-black">✕</button>
+      </div>
+      <ul class="p-4 space-y-3 text-amber-900 overflow-y-auto h-[calc(100%-3rem)]">
+        {% for chapter in chapters %}
+          <li>
+            <a href="{% url 'rread' book.id chapter.id %}" class="block hover:text-amber-700">{{ chapter.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="hidden fixed inset-0 bg-black/40 z-20"></div>
+
+    <!-- Chapter Content -->
+    <main class="max-w-4xl mx-auto px-4 md:px-6 py-10 bg-white shadow-lg rounded-2xl my-10">
+      <!-- Chapter Heading -->
+      <h2 class="text-2xl md:text-3xl font-extrabold mb-6 text-center">{{ chapter.title }}</h2>
+
+      <!-- Story Text -->
+      <div class="text-base md:text-lg leading-relaxed space-y-6 text-gray-800">{{ chapter.content|safe }}</div>
+
+      <!-- Navigation Arrows + Chapters -->
+      <div class="mt-10 flex justify-between items-center">
+        <!-- Previous -->
+        {% if prev_chapter %}
+          <a href="{% url 'rread' book.id prev_chapter.order %}" class="w-10 h-10 flex items-center justify-center bg-amber-900 text-white rounded-full hover:bg-amber-800 transition shadow-md">←</a>
+        {% else %}
+          <span class="w-10 h-10"></span>
+        {% endif %}
+
+        <!-- Chapter Toggle -->
+        <button id="chapterToggle" class="px-6 py-2 bg-amber-900 text-white rounded-full hover:bg-amber-800 transition shadow-md">Chapters</button>
+
+        <!-- Next -->
+        {% if next_chapter %}
+          <a href="{% url 'rread' book.id next_chapter.order %}" class="w-10 h-10 flex items-center justify-center bg-amber-900 text-white rounded-full hover:bg-amber-800 transition shadow-md">→</a>
+        {% else %}
+          <span class="w-10 h-10"></span>
+        {% endif %}
+      </div>
+
+      <!-- Comments Section -->
+      <section class="mt-14 border-t pt-8">
+        <h3 class="text-xl font-bold mb-6">Comments</h3>
+        <div class="space-y-4">
+          <div class="bg-gray-100 rounded-lg p-4 shadow-sm">
+          </div>
+          
+        </div>
+
+        <!-- Add Comment -->
+        <div class="mt-6 flex gap-2">
+          <input type="text" placeholder="Write a comment..." class="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          <button class="bg-amber-900 text-white px-5 py-2 rounded-lg hover:bg-amber-800 transition shadow">Post</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-amber-950 text-white text-center py-5 text-sm">&copy; 2025 Signed & Stamped Publishing House</footer>
+
+    <!-- JS for Sidebar -->
+    <script>
+      const sidebar = document.getElementById('chapterSidebar')
+      const toggleBtn = document.getElementById('chapterToggle')
+      const closeBtn = document.getElementById('closeSidebar')
+      const overlay = document.getElementById('overlay')
+      
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.remove('hidden')
+        sidebar.classList.add('visible')
+        overlay.classList.remove('hidden')
+      })
+      
+      closeBtn.addEventListener('click', () => {
+        sidebar.classList.remove('visible')
+        sidebar.classList.add('hidden')
+        overlay.classList.add('hidden')
+      })
+      
+      overlay.addEventListener('click', () => {
+        sidebar.classList.remove('visible')
+        sidebar.classList.add('hidden')
+        overlay.classList.add('hidden')
+      })
+    </script>
+  </body>
+</html>

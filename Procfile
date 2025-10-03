@@ -1,0 +1,1 @@
+web: gunicorn MODEL1.wsgi
