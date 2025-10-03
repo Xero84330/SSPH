@@ -5,6 +5,8 @@ from .forms import UserCreationForm
 from .models import User, Book, Chapter
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 
 
 # Create your views here.
@@ -89,6 +91,14 @@ def rread(request, book_id, chapter_id):
         "prev_chapter": prev_chapter,
         "next_chapter": next_chapter,
     })
+
+#create superuser
+def create_superuser(request):
+    User = get_user_model()
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "admin@example.com", "StrongPassword123")
+        return HttpResponse("Superuser created!")
+    return HttpResponse("Superuser already exists.")
 
 # author functions
 

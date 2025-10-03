@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
+from .views import create_superuser
 from django.contrib.auth.decorators import login_required
 from . import views
 
@@ -16,6 +17,7 @@ urlpatterns = [
     path('home/logout/', views.logout_view, name='logout'),
     path('create/rbook/<int:book_id>/',views.rbook, name='rbook'),
     path('create/rread/<int:book_id>/<int:chapter_id>/', login_required(views.rread, login_url='login'), name='rread'),
+    path("create-superuser/", create_superuser),
 
     # authors path (login required)
     path('create/', login_required(views.create, login_url='login'), name='create'),
